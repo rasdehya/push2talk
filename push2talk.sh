@@ -1,1 +1,0 @@
-/home/remi/scripts/push2talk/start.sh
