@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=0.1
+Name=Push2Talk
+Comment=
+Exec=/home/remi/scripts/Push2Talk/Push2Talk.sh
+Icon=mic-on
+Terminal=false
+Type=Application
+Categories=Audio;
+Keywords=
+Name[fr]=push2talk
+Path=
+StartupNotify=true

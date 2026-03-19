@@ -1,0 +1,9 @@
+evdev
+requests
+flask
+faster-whisper
+sounddevice
+numpy
+pystray
+python-xlib
+nvidia-cublas-cu12
