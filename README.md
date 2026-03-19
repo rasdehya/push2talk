@@ -77,19 +77,5 @@ export LD_LIBRARY_PATH=/chemin/vers/venv/lib/python3.12/site-packages/nvidia/cub
 ### Lancer l'application
 
 ```bash
-# Activez l'environnement virtuel
-source venv/bin/activate
-
-# Lancez l'application
-python3 main.py
+./push2talk.sh
 ```
-
-### Configuration
-
-Vous pouvez configurer :
-- La **touche push-to-talk** (par défaut, vérifiez la documentation du projet)
-- Le **modèle Whisper** utilisé (tiny, base, small, medium, large)
-- Le **port Flask** pour l'API
-
-Consultez le fichier `config.py` ou les arguments de ligne de commande pour les options disponibles.
-
