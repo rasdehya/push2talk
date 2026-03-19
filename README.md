@@ -79,3 +79,6 @@ export LD_LIBRARY_PATH=/chemin/vers/venv/lib/python3.12/site-packages/nvidia/cub
 ```bash
 ./push2talk.sh
 ```
+- Appuyer sur la touche pour lancer l'enregistrement
+- Relacher pour copier dans la fenetre active suivi d'un envoie de la touche ENTER
+ 
