@@ -70,7 +70,13 @@ export LD_LIBRARY_PATH=/chemin/vers/venv/lib/python3.12/site-packages/nvidia/cub
 WHISPER_DEVICE = "cuda"             # "cuda" si GPU Nvidia, sinon "cpu"
 WHISPER_COMPUTE_TYPE = "float16"    # "float16" sur GPU, "int8" sur CPU
 ```
-
+- Vous pouvez jouer avec les valeurs des variables suivantes pour faire varier la rapiditée/qualitée de la retranscription.
+```bash
+WHISPER_MODEL = "medium"          # small = bon compromis vitesse/qualité
+WHISPER_BEAM_SIZE = 5             # 1 = greedy, plus rapide, quasi même qualité
+WHISPER_VAD_FILTER = True       # supprime les silences avant transcription
+WHISPER_VAD_THRESHOLD = 0.5     # 0.0-1.0, plus bas = plus permissif (défaut 0.5)
+```
 
 ### Lancer l'application
 
