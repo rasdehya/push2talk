@@ -49,13 +49,10 @@ sudo apt install -y python3-pip xdotool alsa-utils librsvg2-bin
 # Créez un environnement virtuel
 python3 -m venv venv
 source venv/bin/activate
-
 # Et installez les dépendances Python
 pip install -r requirements.txt
-
-# Ou en utilisant uv comme wrapper pour pip venv etc...
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
+# Ou en utilisant uv comme wrapper pour pip venv etc come dans le install.sh...
+# curl -LsSf https://astral.sh/uv/install.sh | sh
 uv init 
 uv venv
 uv pip install -r requirements.txt
