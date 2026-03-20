@@ -51,13 +51,13 @@ python3 -m venv venv
 source venv/bin/activate
 # Et installez les dépendances Python
 pip install -r requirements.txt
-# Ou en utilisant uv comme wrapper pour pip venv etc come dans le install.sh...
+# Ou en utilisant uv (wrapper pour pip, venv, etc...)
 # curl -LsSf https://astral.sh/uv/install.sh | sh
 uv init 
 uv venv
 uv pip install -r requirements.txt
 ```
-### 4. Configuration
+### 4. Configuration (config.py)
 
 - Modifier la bindkey qui declanche l'enregistrement. Utilisez `sudo showkey` pour obtenir le keycode
 - Modifier le nom de votre micro. Utiliser `a record -l` pour trouver le nom du périphérique
@@ -81,6 +81,7 @@ WHISPER_VAD_THRESHOLD = 0.5     # 0.0-1.0, plus bas = plus permissif (défaut 0.
 ### Lancer l'application
 
 ```bash
+chmod +x ./push2talk.sh
 ./push2talk.sh
 ```
 
