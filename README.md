@@ -8,7 +8,8 @@ Un outil d'assistance vocale léger et efficace qui permet d'utiliser la reconna
 
 - **Reconnaissance vocale en temps réel** : Utilise la technologie Whisper optimisée (faster-whisper) pour une transcription rapide
 - **Push-to-talk** : Contrôle l'enregistrement audio via une touche dédiée (configurable)
-- **Interface système** : Icône de barre système (system tray) pour un accès facile
+- **Micro détection** : Détection du micro automatique. Le serveur whisper se lance et le script demarre
+- **Interface système** : Icône de barre système (system tray) pour quitter facilement l'application
 - **Serveur Flask intégré** : API pour intégrer l'outil dans d'autres applications
 - **Support multi-plateforme** : Compatible Linux (Ubuntu/Debian)
 - **Accélération GPU NVIDIA** : Support CUDA pour une performance optimale (optionnel)
@@ -17,7 +18,6 @@ Un outil d'assistance vocale léger et efficace qui permet d'utiliser la reconna
 
 - **Linux** (Ubuntu 20.04+ ou Debian)
 - **Python 3.10+**
-- **Microphone** fonctionnel
 - **Accès administrateur** (pour l'installation de dépendances système)
 - **(Optionnel) GPU NVIDIA** avec CUDA pour de meilleures performances
 
@@ -30,7 +30,7 @@ git clone https://github.com/rasdehya/push2talk.git
 cd push2talk
 ```
 
-### 2. Installation automatique (recommandée)
+### 2. Installation automatique
 
 Exécutez le script d'installation qui installe toutes les dépendances système et Python :
 
@@ -83,4 +83,4 @@ WHISPER_COMPUTE_TYPE = "float16"    # "float16" sur GPU, "int8" sur CPU
 - Appuyer sur la touche choisie pour lancer l'enregistrement ("œ" par default)
 - Relacher pour copier dans la fenetre active suivi d'un envoie de la touche ENTER
 - Vous pouvez quitter l'application en cliquant sur l'icone du systray
- 
+
