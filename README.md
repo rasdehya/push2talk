@@ -61,23 +61,26 @@ uv pip install -r requirements.txt
 
 - Modifier la bindkey qui declanche l'enregistrement. Utilisez `sudo showkey` pour obtenir le keycode
 - Modifier le nom de votre micro. Utiliser `a record -l` pour trouver le nom du périphérique
-
-
 - Si vous avez un GPU NVIDIA et souhaitez utiliser l'accélération CUDA :
 
 ```bash
-# Après l'installation, définissez les chemins des bibliothèques
+# Après l'installation, decommentez et modifier les chemins des bibliothèques
 export LD_LIBRARY_PATH=/chemin/vers/venv/lib/python3.12/site-packages/nvidia/cublas/lib:/chemin/vers/venv/lib/python3.12/site-packages/nvidia/cudnn/lib:$LD_LIBRARY_PATH
+# Et modifier les variables 
+WHISPER_DEVICE = "cuda"             # "cuda" si GPU Nvidia, sinon "cpu"
+WHISPER_COMPUTE_TYPE = "float16"    # "float16" sur GPU, "int8" sur CPU
 ```
-> **Note** : Remplacez `/chemin/vers/venv` par le chemin réel de votre environnement virtuel.
 
-## 🎮 Utilisation
 
 ### Lancer l'application
 
 ```bash
 ./push2talk.sh
 ```
+
+## 🎮 Utilisation
+
 - Appuyer sur la touche choisie pour lancer l'enregistrement ("œ" par default)
 - Relacher pour copier dans la fenetre active suivi d'un envoie de la touche ENTER
+- Vous pouvez quitter l'application en cliquant sur l'icone du systray
  
