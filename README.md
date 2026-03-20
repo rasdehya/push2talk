@@ -26,7 +26,7 @@ Un outil d'assistance vocale léger et efficace qui permet d'utiliser la reconna
 ### 1. Cloner le dépôt
 
 ```bash
-git clone https://github.com/votre-username/push2talk.git
+git clone https://github.com/rasdehya/push2talk.git
 cd push2talk
 ```
 
@@ -42,16 +42,9 @@ chmod +x install.sh
 ### 3. Installation manuelle
 
 Si vous préférez une installation étape par étape :
-
 ```bash
 # Installez les dépendances système
-sudo apt install \
-  python3-pip \
-  xdotool \
-  alsa-utils \
-  libnotify-bin \
-  librsvg2-bin \
-  -y
+sudo apt install -y python3-pip xdotool alsa-utils librsvg2-bin
 
 # Créez un environnement virtuel
 python3 -m venv venv
@@ -60,7 +53,13 @@ source venv/bin/activate
 # Installez les dépendances Python
 pip install -r requirements.txt
 ```
-
+Ou en utilisant uv comme wrapper pour pip venv etc...
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+uv init 
+uv venv
+uv pip install -r requirements.txt
+```
 ### 4. Configuration GPU (optionnel - NVIDIA uniquement)
 
 Si vous avez un GPU NVIDIA et souhaitez utiliser l'accélération CUDA :
