@@ -57,15 +57,18 @@ uv init
 uv venv
 uv pip install -r requirements.txt
 ```
-### 4. Configuration GPU (optionnel - NVIDIA uniquement)
+### 4. Configuration
 
-Si vous avez un GPU NVIDIA et souhaitez utiliser l'accélération CUDA :
+- Modifier la bindkey qui declanche l'enregistrement. Utilisez `sudo showkey` pour obtenir le keycode
+- Modifier le nom de votre micro. Utiliser `a record -l` pour trouver le nom du périphérique
+
+
+- Si vous avez un GPU NVIDIA et souhaitez utiliser l'accélération CUDA :
 
 ```bash
 # Après l'installation, définissez les chemins des bibliothèques
 export LD_LIBRARY_PATH=/chemin/vers/venv/lib/python3.12/site-packages/nvidia/cublas/lib:/chemin/vers/venv/lib/python3.12/site-packages/nvidia/cudnn/lib:$LD_LIBRARY_PATH
 ```
-
 > **Note** : Remplacez `/chemin/vers/venv` par le chemin réel de votre environnement virtuel.
 
 ## 🎮 Utilisation
@@ -75,6 +78,6 @@ export LD_LIBRARY_PATH=/chemin/vers/venv/lib/python3.12/site-packages/nvidia/cub
 ```bash
 ./push2talk.sh
 ```
-- Appuyer sur la touche pour lancer l'enregistrement
+- Appuyer sur la touche choisie pour lancer l'enregistrement ("œ" par default)
 - Relacher pour copier dans la fenetre active suivi d'un envoie de la touche ENTER
  
