@@ -6,4 +6,4 @@ export LD_LIBRARY_PATH=/home/remi/scripts/push2talk/.venv/lib/python3.12/site-pa
 
 cd $HOME/scripts/push2talk/
 source .venv/bin/activate
-./push2talk.py
+./push2talk.py "$@"

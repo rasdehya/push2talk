@@ -2,7 +2,7 @@
 Version=0.1
 Name=Push2Talk
 Comment=
-Exec=/home/remi/scripts/Push2Talk/Push2Talk.sh
+Exec=/home/remi/scripts/push2Talk/ush2Talk.sh
 Icon=mic-on
 Terminal=false
 Type=Application

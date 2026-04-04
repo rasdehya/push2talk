@@ -6,11 +6,15 @@ xdotool \
 alsa-utils \
 libnotify-bin \
 librsvg2-bin \
+sox \
 -y
+
+sudo apt install pipewire-audio-client-libraries
+
 
 uv init
 uv venv
-uv pip install -r requirements.txt
+uv pip install -r requirements.txt	
 
 
 # Replace with the correct nvidia-cublas PATH

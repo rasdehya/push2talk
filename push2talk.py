@@ -34,7 +34,14 @@ from PIL import Image, ImageDraw
 from pystray import Icon, Menu, MenuItem
 
 import config
-from config import KEY_TRIGGER, MIC_NAME, AUDIO_FILE, WHISPER_URL, ICON, MIN_RECORD_DURATION
+from config import (
+    KEY_TRIGGER,
+    MIC_NAME,
+    AUDIO_FILE,
+    WHISPER_URL,
+    ICON,
+    MIN_RECORD_DURATION,
+)
 
 # ---------------------------------------------------------------------------
 # Logging
@@ -69,6 +76,12 @@ _rec_lock = threading.Lock()
 _rec: Optional[subprocess.Popen] = None
 _recording = False
 
+
+def _is_recording() -> bool:
+    with _rec_lock:
+        return _recording
+
+
 # ---------------------------------------------------------------------------
 # Icône systray (instanciée une seule fois)
 # ---------------------------------------------------------------------------
@@ -77,6 +90,7 @@ _tray_lock = threading.Lock()
 
 # Process du serveur Whisper (None si démarré avant nous ou non géré)
 _whisper_proc: Optional[subprocess.Popen] = None
+
 
 # ---------------------------------------------------------------------------
 # Icône systray
@@ -154,8 +168,9 @@ def setup_tray() -> None:
 
     def _setup(icon: Icon) -> None:
         icon.visible = True
-        threading.Thread(target=_watch_clicks, args=(icon,),
-                         name="XlibClickWatcher", daemon=True).start()
+        threading.Thread(
+            target=_watch_clicks, args=(icon,), name="XlibClickWatcher", daemon=True
+        ).start()
 
     try:
         _tray_icon.run(setup=_setup)
@@ -189,13 +204,17 @@ def _is_port_open(host: str, port: int, timeout: float = 0.5) -> bool:
             return False
 
 
-def ensure_whisper(host: str = "127.0.0.1", port: int = 5001, wait: int = 30) -> None:
+def ensure_whisper(host: str = "127.0.0.1", port: int = None, wait: int = 30) -> None:
     """Vérifie que le serveur Whisper tourne ; le démarre si nécessaire.
     Si on le démarre nous-mêmes, on stocke le process dans _whisper_proc."""
     global _whisper_proc
+    if port is None:
+        port = config.WHISPER_PORT if hasattr(config, "WHISPER_PORT") else 5001
 
     if _is_port_open(host, port):
-        log.info("Serveur Whisper déjà actif sur %s:%d (non géré par nous).", host, port)
+        log.info(
+            "Serveur Whisper déjà actif sur %s:%d (non géré par nous).", host, port
+        )
         return
 
     log.info("Démarrage du serveur Whisper…")
@@ -242,11 +261,14 @@ def stop_whisper() -> None:
         return
 
     # Whisper était déjà lancé avant nous → on cherche le PID via le port
-    log.info("Recherche du processus Whisper sur le port 5001…")
+    log.info(
+        "Recherche du processus Whisper sur le port %d…",
+        config.WHISPER_PORT if hasattr(config, "WHISPER_PORT") else 5001,
+    )
+    port = config.WHISPER_PORT if hasattr(config, "WHISPER_PORT") else 5001
     try:
         result = subprocess.run(
-            ["fuser", "5001/tcp"],
-            capture_output=True, text=True
+            ["fuser", f"{port}/tcp"], capture_output=True, text=True
         )
         pids = result.stdout.strip().split()
         if not pids:
@@ -275,7 +297,9 @@ def _find_arecord_device() -> list:
     Retourne ["-D", "plughw:X,0"] si trouvé, [] sinon (arecord utilisera le défaut).
     """
     try:
-        result = subprocess.run(["/usr/bin/arecord", "-l"], capture_output=True, text=True, timeout=5)
+        result = subprocess.run(
+            ["/usr/bin/arecord", "-l"], capture_output=True, text=True, timeout=5
+        )
         for line in result.stdout.splitlines():
             if MIC_NAME in line and line.startswith("carte"):
                 card_num = line.split(":")[0].replace("carte", "").strip()
@@ -283,7 +307,10 @@ def _find_arecord_device() -> list:
                 return ["-D", f"plughw:{card_num},0"]
     except Exception:
         log.exception("Erreur lors de la recherche du périphérique arecord.")
-    log.warning("Micro '%s' non trouvé dans arecord -l, utilisation du périphérique par défaut.", MIC_NAME)
+    log.warning(
+        "Micro '%s' non trouvé dans arecord -l, utilisation du périphérique par défaut.",
+        MIC_NAME,
+    )
     return []
 
 
@@ -292,12 +319,26 @@ def start_record() -> None:
 
     with _rec_lock:
         if _rec is not None:
-            log.warning("start_record() appelé alors qu'un enregistrement est déjà en cours.")
+            log.warning(
+                "start_record() appelé alors qu'un enregistrement est déjà en cours."
+            )
             return
         log.info("Démarrage de l'enregistrement → %s", AUDIO_FILE)
         try:
             _rec = subprocess.Popen(
-                ["/usr/bin/arecord"] + _find_arecord_device() + ["-f", "S16_LE", "-r", "16000", "-c", "1", "-t", "wav", str(AUDIO_FILE)],
+                ["/usr/bin/arecord"]
+                + _find_arecord_device()
+                + [
+                    "-f",
+                    "S16_LE",
+                    "-r",
+                    "16000",
+                    "-c",
+                    "1",
+                    "-t",
+                    "wav",
+                    str(AUDIO_FILE),
+                ],
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.PIPE,
             )
@@ -337,12 +378,20 @@ def stop_record() -> None:
             duration = wf.getnframes() / wf.getframerate()
     except Exception:
         log.exception("Impossible de lire %s pour vérifier la durée.", AUDIO_FILE)
+        try:
+            os.remove(AUDIO_FILE)
+        except OSError:
+            pass
         return
 
     log.debug("Durée du clip audio : %.2f s", duration)
 
     if duration < MIN_RECORD_DURATION:
-        log.info("Clip trop court (%.2f s < %.2f s), transcription annulée.", duration, MIN_RECORD_DURATION)
+        log.info(
+            "Clip trop court (%.2f s < %.2f s), transcription annulée.",
+            duration,
+            MIN_RECORD_DURATION,
+        )
         return
     threading.Thread(target=transcribe, name="Transcribe", daemon=True).start()
 
@@ -364,13 +413,18 @@ def transcribe() -> None:
         log.exception("Erreur de communication avec Whisper.")
         return
 
+    try:
+        os.remove(AUDIO_FILE)
+    except OSError:
+        pass
+
     if not text:
         log.info("Whisper a retourné un texte vide.")
         return
 
     log.info("Texte transcrit : %r", text)
     try:
-        subprocess.run(["xdotool", "type", "--clearmodifiers", text], check=True)
+        subprocess.run(["xdotool", "type", "--clearmodifiers", "--", text], check=True)
         subprocess.run(["xdotool", "key", "Return"], check=True)
     except FileNotFoundError:
         log.error("xdotool introuvable. Installez xdotool.")
@@ -388,7 +442,9 @@ def find_keyboard() -> evdev.InputDevice:
             log.info("Clavier trouvé : %s (%s)", d.name, d.path)
             return d
     if devices:
-        log.warning("Aucun clavier nommé 'keyboard', utilisation de %s.", devices[0].name)
+        log.warning(
+            "Aucun clavier nommé 'keyboard', utilisation de %s.", devices[0].name
+        )
         return devices[0]
     raise RuntimeError("Aucun périphérique d'entrée détecté par evdev.")
 
@@ -432,9 +488,9 @@ def run_keyboard_session() -> None:
                     continue
                 key = categorize(event)
                 if key.scancode == KEY_TRIGGER:
-                    if key.keystate == key.key_down and not _recording:
+                    if key.keystate == key.key_down and not _is_recording():
                         start_record()
-                    elif key.keystate == key.key_up and _recording:
+                    elif key.keystate == key.key_up and _is_recording():
                         stop_record()
                 else:
                     ui.write_event(event)
@@ -481,7 +537,9 @@ def mic_watcher_loop() -> None:
     """
     # Initialise à True si le micro est déjà branché au démarrage
     try:
-        _r = subprocess.run(["/usr/bin/arecord", "-l"], capture_output=True, text=True, timeout=5)
+        _r = subprocess.run(
+            ["/usr/bin/arecord", "-l"], capture_output=True, text=True, timeout=5
+        )
         mic_connected = MIC_NAME in _r.stdout
         if mic_connected:
             log.info("Micro déjà branché au démarrage, déclenchement immédiat.")
@@ -508,7 +566,9 @@ def mic_watcher_loop() -> None:
         try:
             result = subprocess.run(
                 ["/usr/bin/arecord", "-l"],
-                capture_output=True, text=True, timeout=5,
+                capture_output=True,
+                text=True,
+                timeout=5,
             )
             mic_present = MIC_NAME in result.stdout
 
@@ -556,7 +616,9 @@ def mic_watcher_loop() -> None:
             if session_thread and session_thread.is_alive():
                 session_thread.join(timeout=5.0)
                 if session_thread.is_alive():
-                    log.warning("La session clavier ne s'est pas terminée dans les temps.")
+                    log.warning(
+                        "La session clavier ne s'est pas terminée dans les temps."
+                    )
 
             stop_whisper()
 
